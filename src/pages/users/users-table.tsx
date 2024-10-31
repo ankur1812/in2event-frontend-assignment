@@ -10,10 +10,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { SearchBar } from "@/components/searchbar";
+import { Modal } from "@/components/ui/modal";
+import { UserInfo } from "@/components/userinfo";
 import { useUsers } from "@/services/use-users";
 
 export const UsersTable = () => {
-  const { users, loading, error, mutations } = useUsers();
+  const { loading, users, currentUserInfo, showModal, error, mutations } = useUsers();
 
   if (loading) {
     return <div>Loading...</div>;
@@ -43,10 +45,15 @@ export const UsersTable = () => {
               <TableCell>{user.name}</TableCell>
               <TableCell>{user.username}</TableCell>
               <TableCell>{user.email}</TableCell>
+              <TableCell> <button onClick={() => mutations.viewUser(user.id)}>View</button></TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
+
+      { showModal && <Modal isOpen={showModal} onClose={mutations.closeModal}> 
+        <UserInfo user={currentUserInfo} />
+      </Modal>}
     </>
   );
 };
