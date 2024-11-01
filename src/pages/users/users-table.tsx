@@ -15,9 +15,10 @@ import { UserInfo } from "@/components/userinfo";
 import { useUsers } from "@/services/use-users";
 import { NewUserForm } from "@/components/new-user-form";
 import Toast from "@/components/ui/toast";
+import Pagination from "@/components/ui/pagination";
 
 export const UsersTable = () => {
-  const { loading, users, currentUserInfo, showModal, showAddUserModal, toastMessage, error, mutations } = useUsers();
+  const { loading, users, currentUserInfo, showModal, showAddUserModal, toastMessage, totalPages, currentPage, pageSize, error, mutations } = useUsers();
 
   if (loading) {
     return <div>Loading...</div>;
@@ -31,7 +32,7 @@ export const UsersTable = () => {
     <>
       <SearchBar onChange={mutations.filterUsers}/>
       <Table>
-        <TableCaption>{users.length ? "A list of users." : "No users found."}</TableCaption>
+        <TableCaption>{users.length ? "In2Events list of users." : "No users found."}</TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead className="w-[100px]">ID</TableHead>
@@ -56,7 +57,14 @@ export const UsersTable = () => {
           ))}
         </TableBody>
       </Table>
-      {(showModal || showAddUserModal) && <Modal isOpen={showModal || showAddUserModal} onClose={mutations.closeModal}> 
+      <Pagination
+        currentPage={currentPage}
+        pageSize={pageSize}
+        totalPages={totalPages}
+        onPageChange={(page) => mutations.setCurrentPage(page)}
+        onSizeChange={(size) => mutations.setPageSize(size)} 
+      />
+      {<Modal isOpen={showModal || showAddUserModal} title={showAddUserModal ? 'Add User' : currentUserInfo?.name} onClose={mutations.closeModal}> 
         {currentUserInfo && <UserInfo user={currentUserInfo} />}
         {showAddUserModal && <NewUserForm onSave={mutations.addNewUser} />}
       </Modal>}

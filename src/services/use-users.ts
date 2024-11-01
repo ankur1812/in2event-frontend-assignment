@@ -10,6 +10,10 @@ const useUsers = () => {
   const [showModal, updateShowModal ] = useState<boolean>(false)
   const [showAddUserModal, setShowAddUserModal] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>("")
+  const [pageSize, setPageSize] = useState<number>(10)
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const [totalPages, setTotalPages] = useState<number>(1)
+  
 
   const fetchDataFromApi = async (url: string, method: 'GET' | 'POST' = 'GET', body = null) => {
     try {
@@ -53,11 +57,11 @@ const useUsers = () => {
   }
 
   const addNewUser = async (user: User) => {
-    debugger;
-    user.id = allUsers.length; // Generqte id client-side
+    user.id = allUsers.length + 100; // Generqte id client-side
     const response = await fetchDataFromApi(`https://jsonplaceholder.typicode.com/users/`, 'POST', user);
     setUsers([user, ...users.slice(0, users.length - 1)])
-    setAllUsers([user, ...allUsers]);
+    setAllUsers([...allUsers, user]);
+    setTotalPages(Math.ceil((allUsers.length + 1) / pageSize));
     setToastMessage(`User ${user.username} successfully added!`)
     closeModal();
   }
@@ -72,7 +76,21 @@ const useUsers = () => {
     fetchUsers();
   }, []);
 
-  return { users, currentUserInfo, showModal, showAddUserModal, toastMessage, loading, error, mutations: { filterUsers, viewUser, closeModal, addNewUser, setShowAddUserModal } };
+  useEffect( () => {
+    setUsers(allUsers.slice(0, pageSize));
+    setCurrentPage(1);
+    setTotalPages(Math.ceil(allUsers.length / pageSize));
+  }, [pageSize])
+
+  useEffect( () => {
+    setUsers(allUsers.slice( pageSize * (currentPage - 1), pageSize * currentPage));
+  }, [currentPage])
+
+  return { 
+    users, currentUserInfo, showModal, showAddUserModal, toastMessage, totalPages, currentPage, pageSize, loading, error,
+    mutations: { 
+      filterUsers, viewUser, closeModal, addNewUser, setShowAddUserModal, setCurrentPage, setTotalPages, setPageSize
+    } };
 };
 
 export { useUsers };
