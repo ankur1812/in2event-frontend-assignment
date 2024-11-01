@@ -2,7 +2,7 @@ import React from "react";
 import { User, UserSchema } from "@/schemas/user";
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-
+import { PersonIcon, EnvelopeClosedIcon, MobileIcon, GlobeIcon, HomeIcon, IdCardIcon, BackpackIcon } from "@radix-ui/react-icons"
   
 interface NewUserFromProps {
   onSave: (user: User) => void;
@@ -30,13 +30,21 @@ const NewUserForm: React.FC<NewUserFromProps> = ({ onSave }) => {
         }
       }
     };
+    const iconMap:any = {
+      PersonIcon, EnvelopeClosedIcon, MobileIcon, GlobeIcon, HomeIcon, IdCardIcon, BackpackIcon
+    }
+  
 
-    const inputField = (fieldname: string, label?: string, required?: boolean) => {
+    const inputField = (fieldname: string, label?: string, icon?: string,  required?: boolean) => {
       const errorMsg = errors && errors[fieldname] ? errors[fieldname].message : "";
+      const Icon = iconMap[icon];
       return (
-        <div className="flex flex-col w-full md:w-1/2">
+        <div className="flex flex-col items-center md:items-auto w-full md:w-1/2">
           <div className="flex flex-wrap">
-            <label className="capitalize min-w-24" htmlFor="name">{label || fieldname} <sup>{ required ? '*' : ''}</sup></label>
+            <span className="flex gap-2 items-center">
+              { Icon && <Icon />}
+              <label className="capitalize min-w-24" htmlFor="name">{label || fieldname} <sup>{ required ? '*' : ''}</sup></label>
+            </span>
             <input
               id={fieldname}
               className="bg-inherit border-b border-white focus:outline-none focus:shadow-none2"
@@ -50,19 +58,22 @@ const NewUserForm: React.FC<NewUserFromProps> = ({ onSave }) => {
 
     return (
       <form onSubmit={handleSubmit(onSubmit)}>
-        <label className="text-lg my-2">Personal Info</label>
+        {/* <label className="text-lg my-2">Personal Info</label> */}
         <div className="flex flex-wrap mt-2">
-        { inputField('name', 'Name', true) }
-        { inputField('username', 'Username', true) }
+        { inputField('name', 'Name', 'PersonIcon', true) }
+        { inputField('username', 'Username', 'IdCardIcon', true) }
         </div>
         <div className="flex flex-wrap mt-2">
-        { inputField('email', 'Email', true) }
-        { inputField('phone', 'Phone', true) }
+        { inputField('email', 'Email', 'EnvelopeClosedIcon', true) }
+        { inputField('phone', 'Phone', 'MobileIcon', true) }
         </div>
         <div className="flex flex-wrap mt-2">
-        { inputField('website') }
+        { inputField('website', 'Website', 'GlobeIcon') }
         </div>
-        <label className="text-lg my-2">Address</label>
+        <span className="flex gap-2 items-center justify-center md:justify-normal">
+          <GlobeIcon />
+          <label className="text-md my-2">Address</label>
+        </span>
         <div className="flex flex-wrap mt-2">
         { inputField('suite') }
         { inputField('street') }
@@ -71,7 +82,10 @@ const NewUserForm: React.FC<NewUserFromProps> = ({ onSave }) => {
         { inputField('city') }
         { inputField('zipcode') }
         </div>
-        <label className="text-lg my-2">Company</label>
+        <span className="flex gap-2 items-center justify-center md:justify-normal">
+          <BackpackIcon />
+          <label className="text-md my-2">Company</label>
+        </span>
         <div className="flex flex-wrap mt-2">
         { inputField('companyName', "Name") }
         { inputField('catchPhrase', "Slogan") }

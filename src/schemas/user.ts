@@ -16,7 +16,7 @@ export const UserSchema = z.object({
     zipcode: z.string().optional(),
     geo: z.object({
       lat: z.string().optional(),
-      lang: z.string().optional()
+      lng: z.string().optional()
     }).optional()
   }).optional(),
   company: z.object({

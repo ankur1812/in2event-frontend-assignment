@@ -15,6 +15,7 @@ import { Modal } from "@/components/ui/modal";
 import { UserInfo } from "@/components/userinfo";
 import { useUsers } from "@/services/use-users";
 import { NewUserForm } from "@/components/new-user-form";
+import { EyeOpenIcon } from "@radix-ui/react-icons"
 import Toast from "@/components/ui/toast";
 import Pagination from "@/components/ui/pagination";
 
@@ -63,7 +64,7 @@ export const UsersTable = () => {
               <TableCell>{user.name}</TableCell>
               <TableCell>{user.username}</TableCell>
               <TableCell>{user.email}</TableCell>
-              <TableCell> <button onClick={() => mutations.viewUser(user.id)}>View</button></TableCell>
+              <TableCell> <button className="hover:text-white focus:shadow-none" onClick={() => mutations.viewUser(user.id)}><EyeOpenIcon /></button></TableCell>
             </TableRow>
           ))}
         </TableBody>
