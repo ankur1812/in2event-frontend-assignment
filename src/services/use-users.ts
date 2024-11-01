@@ -1,6 +1,8 @@
 import { User } from "@/schemas/user";
 import { useState, useEffect } from "react";
 
+type sortingType = 'name' | 'email' | null
+
 const useUsers = () => {
   const [allUsers, setAllUsers] = useState<User[]>([]);
   const [users, setUsers] = useState<User[]>([]);
@@ -9,10 +11,12 @@ const useUsers = () => {
   const [error, setError] = useState<string | null>(null);
   const [showModal, updateShowModal ] = useState<boolean>(false)
   const [showAddUserModal, setShowAddUserModal] = useState<boolean>(false);
-  const [toastMessage, setToastMessage] = useState<string>("")
-  const [pageSize, setPageSize] = useState<number>(10)
-  const [currentPage, setCurrentPage] = useState<number>(1)
-  const [totalPages, setTotalPages] = useState<number>(1)
+  const [toastMessage, setToastMessage] = useState<string>("");
+  const [pageSize, setPageSize] = useState<number>(10);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [sortField, setSortField] = useState<sortingType>(null);
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | null>(null);
   
 
   const fetchDataFromApi = async (url: string, method: 'GET' | 'POST' = 'GET', body = null) => {
@@ -66,6 +70,19 @@ const useUsers = () => {
     closeModal();
   }
 
+  const sortTable = (fieldName: 'name' | 'email') => {
+    let newSortDirection : 'asc' | 'desc' = fieldName !== sortField ? 'asc' : (sortDirection == 'desc' ? 'asc' : 'desc')
+    setSortDirection(newSortDirection)
+    setSortField(fieldName)
+    let sortedUsers = [...allUsers].sort((a: User, b: User) => {
+      if (a[fieldName].toLowerCase() > b[fieldName].toLowerCase()) return newSortDirection == 'asc' ? 1 : -1
+      else if (a[fieldName].toLowerCase() < b[fieldName].toLowerCase()) return newSortDirection == 'asc' ? -1 : 1
+      else return 1
+    })
+    setAllUsers(sortedUsers);
+    // setCurrentPage(1)
+    setUsers(sortedUsers.slice(pageSize * (currentPage - 1), pageSize * currentPage))
+  }
   const closeModal = () => {
     setCurrentUserInfo(null);
     setShowAddUserModal(false);
@@ -87,9 +104,9 @@ const useUsers = () => {
   }, [currentPage])
 
   return { 
-    users, currentUserInfo, showModal, showAddUserModal, toastMessage, totalPages, currentPage, pageSize, loading, error,
+    users, currentUserInfo, showModal, showAddUserModal, toastMessage, totalPages, currentPage, pageSize, sortField, sortDirection, loading, error,
     mutations: { 
-      filterUsers, viewUser, closeModal, addNewUser, setShowAddUserModal, setCurrentPage, setTotalPages, setPageSize
+      filterUsers, viewUser, closeModal, addNewUser, setShowAddUserModal, setCurrentPage, setTotalPages, setPageSize, sortTable
     } };
 };
 

@@ -9,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { cn } from "@/lib/utils"
 import { SearchBar } from "@/components/searchbar";
 import { Modal } from "@/components/ui/modal";
 import { UserInfo } from "@/components/userinfo";
@@ -18,7 +19,7 @@ import Toast from "@/components/ui/toast";
 import Pagination from "@/components/ui/pagination";
 
 export const UsersTable = () => {
-  const { loading, users, currentUserInfo, showModal, showAddUserModal, toastMessage, totalPages, currentPage, pageSize, error, mutations } = useUsers();
+  const { loading, users, currentUserInfo, showModal, showAddUserModal, toastMessage, totalPages, currentPage, pageSize, sortField, sortDirection, error, mutations } = useUsers();
 
   if (loading) {
     return <div>Loading...</div>;
@@ -28,6 +29,16 @@ export const UsersTable = () => {
     return <div>{error}</div>;
   }
 
+  const sortHeader = (fieldName: string) => 
+    <TableHead className={cn({"text-white": sortField == fieldName})}>
+        <button className="flex gap-2 items-center capitalize focus:shadow-none hover:text-white" onClick={() => mutations.sortTable(fieldName)}>
+          {fieldName}
+          <span>
+            {sortField !== fieldName ? '' : sortDirection == 'asc' ? '↑' : '↓'}
+          </span>
+        </button>
+    </TableHead>
+    
   return (
     <>
       <SearchBar onChange={mutations.filterUsers}/>
@@ -35,10 +46,10 @@ export const UsersTable = () => {
         <TableCaption>{users.length ? "In2Events list of users." : "No users found."}</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px]">ID</TableHead>
-            <TableHead>Name</TableHead>
+            <TableHead>ID</TableHead>
+            {sortHeader('name')}
             <TableHead>Username</TableHead>
-            <TableHead>Email</TableHead>
+            {sortHeader('email')}
             <TableHead>Action</TableHead>
           </TableRow>
         </TableHeader>
