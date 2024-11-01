@@ -20,7 +20,7 @@ import Toast from "@/components/ui/toast";
 import Pagination from "@/components/ui/pagination";
 
 export const UsersTable = () => {
-  const { loading, users, currentUserInfo, showModal, showAddUserModal, toastMessage, totalPages, currentPage, pageSize, sortField, sortDirection, error, mutations } = useUsers();
+  const { loading, users, currentUserInfo, showModal, showAddUserModal, toastMessage, totalCount, totalPages, currentPage, pageSize, sortField, sortDirection, error, mutations } = useUsers();
 
   if (loading) {
     return <div>Loading...</div>;
@@ -30,21 +30,23 @@ export const UsersTable = () => {
     return <div>{error}</div>;
   }
 
-  const sortHeader = (fieldName: string) => 
-    <TableHead className={cn({"text-white": sortField == fieldName})}>
-        <button className="flex gap-2 items-center capitalize focus:shadow-none hover:text-white" onClick={() => mutations.sortTable(fieldName)}>
+  const sortHeader = (fieldName: string) => (
+    <TableHead>
+      <button className="flex gap-2 items-center capitalize focus:shadow-none hover:text-white" onClick={() => mutations.sortTable(fieldName)}>
+        <span className={cn({"text-secondary": sortField == fieldName})}>
           {fieldName}
-          <span>
-            {sortField !== fieldName ? '' : sortDirection == 'asc' ? '↑' : '↓'}
-          </span>
-        </button>
+        </span>
+        <span className={sortDirection == 'asc' && sortField == fieldName ? 'text-secondary' : 'text-muted-foreground'}>↑</span>
+        <span className={sortDirection == 'desc' && sortField == fieldName ? 'text-secondary' : 'text-muted-foreground'}>↓</span>
+      </button>
     </TableHead>
+  )
     
   return (
     <>
       <SearchBar onChange={mutations.filterUsers}/>
       <Table>
-        <TableCaption>{users.length ? "In2Events list of users." : "No users found."}</TableCaption>
+        <TableCaption>{users.length ? `Showing ${users.length} of ${totalCount} user records` : "No users found."}</TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead>ID</TableHead>

@@ -1,11 +1,11 @@
 import { User } from "@/schemas/user";
-import { useState, useEffect } from "react";
+import { useState, useMemo, useEffect } from "react";
 
-type sortingType = 'name' | 'email' | null
+type sortingType = 'name' | 'email'
 
 const useUsers = () => {
   const [allUsers, setAllUsers] = useState<User[]>([]);
-  const [users, setUsers] = useState<User[]>([]);
+  const [filterString, setFilterString] = useState('');
   const [currentUserInfo, setCurrentUserInfo] = useState<User | null>(null)
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -15,9 +15,8 @@ const useUsers = () => {
   const [pageSize, setPageSize] = useState<number>(10);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
-  const [sortField, setSortField] = useState<sortingType>(null);
+  const [sortField, setSortField] = useState<sortingType>();
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | null>(null);
-  
 
   const fetchDataFromApi = async (url: string, method: 'GET' | 'POST' = 'GET', body = null) => {
     try {
@@ -43,7 +42,6 @@ const useUsers = () => {
 
   const fetchUsers = async () => {
     let data = await fetchDataFromApi("https://jsonplaceholder.typicode.com/users");
-    setUsers(data);
     setAllUsers(data);
     setLoading(false);
   };
@@ -55,34 +53,48 @@ const useUsers = () => {
   }
 
   const filterUsers = (filterString: string) => {
-    filterString = filterString.toLowerCase();
-    let filteredUsers = allUsers.filter( (user: User) => user.name.toLowerCase().includes(filterString) || user.email.toLowerCase().includes(filterString))
-    setUsers(filteredUsers);
+    setFilterString(filterString)
   }
 
   const addNewUser = async (user: User) => {
     user.id = allUsers.length + 100; // Generqte id client-side
     const response = await fetchDataFromApi(`https://jsonplaceholder.typicode.com/users/`, 'POST', user);
-    setUsers([user, ...users.slice(0, users.length - 1)])
-    setAllUsers([...allUsers, user]);
-    setTotalPages(Math.ceil((allUsers.length + 1) / pageSize));
+    setAllUsers([user, ...allUsers]);
     setToastMessage(`User ${user.username} successfully added!`)
     closeModal();
   }
 
+  const filteredUsers = useMemo(() => {
+    return allUsers.filter(
+      (user) =>
+        user.name.toLowerCase().includes(filterString.toLowerCase()) ||
+        user.email.toLowerCase().includes(filterString.toLowerCase())
+    );
+  }, [allUsers, filterString]);
+
+  const sortedUsers = useMemo(() => {
+    if (!sortField) return [...filteredUsers];
+    return [...filteredUsers].sort((a, b) => {
+      if (a[sortField].toLowerCase() > b[sortField].toLowerCase()) return sortDirection === 'asc' ? 1 : -1;
+      if (a[sortField].toLowerCase() < b[sortField].toLowerCase()) return sortDirection === 'asc' ? -1 : 1;
+      return 0;
+    });
+  }, [filteredUsers, sortField, sortDirection]);
+
+  const paginatedUsers = useMemo(() => {
+    const start = pageSize * (currentPage - 1);
+    const end = start + pageSize;
+    return sortedUsers.slice(start, end);
+  }, [sortedUsers, pageSize, currentPage]);
+
+
   const sortTable = (fieldName: 'name' | 'email') => {
-    let newSortDirection : 'asc' | 'desc' = fieldName !== sortField ? 'asc' : (sortDirection == 'desc' ? 'asc' : 'desc')
-    setSortDirection(newSortDirection)
-    setSortField(fieldName)
-    let sortedUsers = [...allUsers].sort((a: User, b: User) => {
-      if (a[fieldName].toLowerCase() > b[fieldName].toLowerCase()) return newSortDirection == 'asc' ? 1 : -1
-      else if (a[fieldName].toLowerCase() < b[fieldName].toLowerCase()) return newSortDirection == 'asc' ? -1 : 1
-      else return 1
-    })
-    setAllUsers(sortedUsers);
-    // setCurrentPage(1)
-    setUsers(sortedUsers.slice(pageSize * (currentPage - 1), pageSize * currentPage))
-  }
+    const newSortDirection = fieldName !== sortField ? 'asc' : (sortDirection === 'desc' ? 'asc' : 'desc');
+    setSortField(fieldName);
+    setSortDirection(newSortDirection);
+  };
+
+
   const closeModal = () => {
     setCurrentUserInfo(null);
     setShowAddUserModal(false);
@@ -93,18 +105,13 @@ const useUsers = () => {
     fetchUsers();
   }, []);
 
-  useEffect( () => {
-    setUsers(allUsers.slice(0, pageSize));
-    setCurrentPage(1);
-    setTotalPages(Math.ceil(allUsers.length / pageSize));
-  }, [pageSize])
-
-  useEffect( () => {
-    setUsers(allUsers.slice( pageSize * (currentPage - 1), pageSize * currentPage));
-  }, [currentPage])
+  useEffect(() => {
+    setTotalPages(Math.ceil(filteredUsers.length / pageSize));
+    setCurrentPage(1); // Reset to page 1 whenever filtering or page size changes
+  }, [filteredUsers, pageSize]);
 
   return { 
-    users, currentUserInfo, showModal, showAddUserModal, toastMessage, totalPages, currentPage, pageSize, sortField, sortDirection, loading, error,
+    users: paginatedUsers, currentUserInfo, showModal, showAddUserModal, toastMessage, totalCount: allUsers.length, totalPages, currentPage, pageSize, sortField, sortDirection, loading, error,
     mutations: { 
       filterUsers, viewUser, closeModal, addNewUser, setShowAddUserModal, setCurrentPage, setTotalPages, setPageSize, sortTable
     } };
