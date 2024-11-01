@@ -56,6 +56,17 @@ const config: Config = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      animation: {
+        fadeInOut: 'fadeInOut 3s ease-in-out forwards',
+      },
+      keyframes: {
+        fadeInOut: {
+          '0%': { opacity: '0', transform: 'translateX(20px)' },
+          '10%': { opacity: '1', transform: 'translateX(0)' },
+          '90%': { opacity: '1', transform: 'translateX(0)' },
+          '100%': { opacity: '0', transform: 'translateX(20px)' },
+        },
+      },
     },
   },
   // eslint-disable-next-line @typescript-eslint/no-require-imports

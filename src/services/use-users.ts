@@ -8,11 +8,19 @@ const useUsers = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [showModal, updateShowModal ] = useState<boolean>(false)
+  const [showAddUserModal, setShowAddUserModal] = useState<boolean>(false);
+  const [toastMessage, setToastMessage] = useState<string>("")
 
-
-  const fetchDataFromApi = async (url: string) => {
+  const fetchDataFromApi = async (url: string, method: 'GET' | 'POST' = 'GET', body = null) => {
     try {
-      const response = await fetch(url);
+      let opts: any = {
+        method,
+        headers: { 'Content-Type': 'application/json', }
+      }
+      if (body) {
+        opts.body = JSON.stringify(body)
+      }
+      const response = await fetch(url, opts);
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -44,13 +52,27 @@ const useUsers = () => {
     setUsers(filteredUsers);
   }
 
-  const closeModal = () => {updateShowModal(false)}
+  const addNewUser = async (user: User) => {
+    debugger;
+    user.id = allUsers.length; // Generqte id client-side
+    const response = await fetchDataFromApi(`https://jsonplaceholder.typicode.com/users/`, 'POST', user);
+    setUsers([user, ...users.slice(0, users.length - 1)])
+    setAllUsers([user, ...allUsers]);
+    setToastMessage(`User ${user.username} successfully added!`)
+    closeModal();
+  }
+
+  const closeModal = () => {
+    setCurrentUserInfo(null);
+    setShowAddUserModal(false);
+    updateShowModal(false)
+  }
 
   useEffect(() => {
     fetchUsers();
   }, []);
 
-  return { users, currentUserInfo, showModal, loading, error, mutations: { filterUsers, viewUser, closeModal } };
+  return { users, currentUserInfo, showModal, showAddUserModal, toastMessage, loading, error, mutations: { filterUsers, viewUser, closeModal, addNewUser, setShowAddUserModal } };
 };
 
 export { useUsers };
