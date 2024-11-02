@@ -15,30 +15,34 @@ const useUsers = () => {
   const [pageSize, setPageSize] = useState<number>(10);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
-  const [totalUsersCount, setTotalUsersCount] = useState<number>(0);
+  const [allUsersCount, setAllUsersCount] = useState<number>(0);
+  const [usersCount, setUsersCount] = useState<number>(0);
   const [sortField, setSortField] = useState<sortingType>();
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | null>(null);
 
   // BASE API Endpoint URL pointing to Supabase server
   const API_URL = 'https://chclkyygvktplmkjhsbc.supabase.co/rest/v1/users'
 
-  const apiRequest = async (url: string = API_URL, isJsonResponse: boolean = true, body?: User) => {
+  const apiRequest = async (url: string = API_URL, payload?: User) => {
     try {
       let opts: any = {
-        method: !body ? 'GET' : 'POST',
+        method: !payload ? 'GET' : 'POST',
         headers: {
           'Content-Type': 'application/json',
           apikey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNoY2xreXlndmt0cGxta2poc2JjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzA1NDgyMjEsImV4cCI6MjA0NjEyNDIyMX0.Krp_wfhVUZ0jLe1qEsBkWGPBL6i8dW8UJigzFOTf6-M',
           }
       }
-      if (body) {
-        opts.body = JSON.stringify(body)
+      if (payload) {
+        opts.body = JSON.stringify(payload)
       }
       const response = await fetch(url, opts);
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-      if (!isJsonResponse) return 1;
+      if (payload) {
+        // Send true since Supabase POST requests do not return JSON response. 
+        return true;
+      }
       const data = await response.json();
       return data;
     } catch (e){
@@ -60,9 +64,10 @@ const useUsers = () => {
   const fetchTotalCount = async () => {
     // Supabase doesn't send the total itmes count in the basic fetch API
     // This functions fetches all contents of the name column and uses it to get the total rows count
-    let maxNameRows = await apiRequest(getSearchUrl('name')) // (`${API_URL}?select=name`);
+    let maxNameRows = await apiRequest(getSearchUrl('name'))
     const totalRows = maxNameRows.length;
-    setTotalUsersCount(totalRows);
+    if (allUsersCount == 0) setAllUsersCount(totalRows);
+    setUsersCount(totalRows);
     setTotalPages(Math.ceil(totalRows / pageSize));
   };
 
@@ -87,11 +92,14 @@ const useUsers = () => {
   }
 
   const addNewUser = async (user: User) => {
-    const response = await apiRequest(API_URL, false, user);
+    const response = await apiRequest(API_URL, user);
     if(!response) return;
+    user.id = allUsersCount + 1;
     // Workaround for client-side update.
     // Since post call doesn't update the server database, update users data client side 
     setUsers([user, ...users]);
+    setAllUsersCount(allUsersCount + 1)
+    setUsersCount(usersCount + 1)
     setSortField(undefined) // Remove sorting so new data appears on top of table
     setToastMessage(`User ${user.name} successfully added!`)
     setTimeout( () => setToastMessage(''), 3000);
@@ -112,7 +120,7 @@ const useUsers = () => {
   const updatePageSize = (newPagesize: number) => {
     setCurrentPage(1);
     setPageSize(newPagesize);
-    setTotalPages(Math.ceil(totalUsersCount / newPagesize));
+    setTotalPages(Math.ceil(usersCount / newPagesize));
   }
 
   const closeModal = () => {
@@ -134,7 +142,7 @@ const useUsers = () => {
 
 
   return { 
-    users, currentUserInfo, showModal, showAddUserModal, toastMessage, totalUsersCount, totalPages, currentPage, pageSize, sortField, sortDirection, loading, error,
+    users, currentUserInfo, showModal, showAddUserModal, toastMessage, usersCount, totalPages, currentPage, pageSize, sortField, sortDirection, loading, error,
     mutations: { 
       filterUsers, viewUser, closeModal, addNewUser, setShowAddUserModal, setCurrentPage, setTotalPages, updatePageSize, sortTable
     } };
