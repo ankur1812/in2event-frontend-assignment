@@ -1,7 +1,10 @@
 import { User } from "@/schemas/user";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { debounce } from "./debounce";
 
 type sortingType = 'name' | 'email'
+
+const debounceWrapper = debounce(300); // 850ms
 
 const useUsers = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -21,7 +24,7 @@ const useUsers = () => {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | null>(null);
 
   // BASE API Endpoint URL pointing to Supabase server
-  const API_URL = 'https://chclkyygvktplmkjhsbc.supabase.co/rest/v1/users'
+  const API_URL = 'https://chclkyygvktplmkjhsbc.supabase.co/rest/v1/users';
 
   const apiRequest = async (url: string = API_URL, payload?: User) => {
     try {
@@ -64,7 +67,7 @@ const useUsers = () => {
   const fetchTotalCount = async () => {
     // Supabase doesn't send the total itmes count in the basic fetch API
     // This functions fetches all contents of the name column and uses it to get the total rows count
-    let maxNameRows = await apiRequest(getSearchUrl('name'))
+    let maxNameRows = await apiRequest(getSearchUrl('id'))
     const totalRows = maxNameRows.length;
     if (allUsersCount == 0) setAllUsersCount(totalRows);
     setUsersCount(totalRows);
@@ -93,9 +96,13 @@ const useUsers = () => {
 
   const addNewUser = async (user: User) => {
     const response = await apiRequest(API_URL, user);
-    if(!response) return;
+    if(!response) {
+      return;
+    }
+
+    // Since the Supabase POST call doesn't return the success response, manually add the ID information to the added user.
     user.id = allUsersCount + 1;
-    // Workaround for client-side update.
+
     // Since post call doesn't update the server database, update users data client side 
     setUsers([user, ...users]);
     setAllUsersCount(allUsersCount + 1)
@@ -130,15 +137,21 @@ const useUsers = () => {
   }
 
   useEffect(() => {
-    // Fetch users and updated pagination info on search action
-    fetchUsers();
-    fetchTotalCount();
-  }, [filterString]);
+    // Fetch only user records on pagination/ sort actions
+    debounceWrapper( () => {
+      fetchUsers();
+    })
+  }, [currentPage, pageSize, sortField, sortDirection])
+
 
   useEffect(() => {
-    // Fetch users on pagination/ sort actions
-    fetchUsers();
-  }, [currentPage, pageSize, sortField, sortDirection])
+    // Fetch users and filtred user-count info on search action
+    debounceWrapper( () => {
+      fetchUsers();
+      fetchTotalCount();  
+    })
+  }, [filterString]);
+
 
 
   return { 
