@@ -17,7 +17,7 @@ const useUsers = () => {
   const [toastMessage, setToastMessage] = useState<string>("");
   const [pageSize, setPageSize] = useState<number>(10);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(0);
+  const [totalPages, setTotalPages] = useState<number>(1);
   const [allUsersCount, setAllUsersCount] = useState<number>(0);
   const [usersCount, setUsersCount] = useState<number>(0);
   const [sortField, setSortField] = useState<sortingType>();

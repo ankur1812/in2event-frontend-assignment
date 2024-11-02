@@ -24,14 +24,14 @@ const SearchBar: React.FC<SearchBarProps> = ({ className, onChange }) => {
   }
   
   return (
-    <div className="relative flex items-center gap-2  w-full overflow-auto mb-2">
+    <div className={cn("relative flex items-center gap-2  w-full overflow-auto mb-2", className)}>
       <div className="flex items-center border-b border-white">
         <MagnifyingGlassIcon />
         <input
           value={searchString}
           ref={ref}
           onChange={ handleChange }
-          className={cn("w-52 px-2 py-1 bg-inherit  focus:outline-none focus:shadow-none", className)} placeholder="Search by name or email"
+          className="w-52 px-2 py-1 bg-inherit  focus:outline-none focus:shadow-none" placeholder="Search by name or email"
         />
       </div>
       {searchString && (

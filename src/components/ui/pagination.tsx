@@ -2,6 +2,7 @@ import { cn } from '@/lib/utils';
 import React from 'react';
 
 interface PaginationProps {
+    className?: string;
     currentPage: number;
     totalPages: number;
     pageSize: number;
@@ -9,7 +10,7 @@ interface PaginationProps {
     onSizeChange: (size: number) => void;
   }
   
-  const Pagination: React.FC<PaginationProps> = ({ totalPages, currentPage, pageSize, onPageChange, onSizeChange }) => {
+  const Pagination: React.FC<PaginationProps> = ({ className, totalPages, currentPage, pageSize, onPageChange, onSizeChange }) => {
   
 
   // Update page when a button is clicked
@@ -27,13 +28,13 @@ interface PaginationProps {
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   return (
-    <div className="flex items-between justify-between">
+    <div className={cn("flex items-between justify-between", className)}>
       <div className="flex space-x-2 mt-4">
         {pageNumbers.map((page) => (
           <button
             key={page}
             onClick={() => handlePageClick(page)}
-            className={cn("px-3 py-1 rounded focus:outline-none focus:shadow-none hover:border-white", {'bg-white text-black': page === currentPage })}
+            className={cn("px-3 py-1 rounded-lg focus:outline-none focus:shadow-none border border-transparent hover:border-white", {'bg-white text-black': page === currentPage })}
           >
             {page}
           </button>

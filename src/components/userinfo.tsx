@@ -26,9 +26,9 @@ const UserInfo: React.FC<UserInfoProps> = ({ user }) => {
     if (!address) return null;
     let { suite, street, city, zipcode } = address!;
     let fullAddress = suite;
-    if (street) fullAddress += ',' + street;
-    if (city) fullAddress += ',' + city;
-    if (zipcode) fullAddress += ',' + zipcode;
+    if (street) fullAddress += ', ' + street;
+    if (city) fullAddress += ', ' + city;
+    if (zipcode) fullAddress += ', ' + zipcode;
     return fullAddress;
   }
   const fullAddress = getFullAddress(user.address);

@@ -37,9 +37,9 @@ export const UsersTable = () => {
   )
     
   return (
-    <div className={cn({"opacity-80 pointer-events-none": loading})}>
-      <SearchBar onChange={mutations.filterUsers}/>
-      <Table>
+    <div className={cn("flex flex-col", {"opacity-80 pointer-events-none": loading})}>
+      <SearchBar className="order-1" onChange={mutations.filterUsers}/>
+      <Table className="order-2 max-h-[70dvh] md:!max-h-max">
         <TableCaption>{users.length ? `Showing ${users.length} of ${usersCount} user records found.` : (loading ? "Loading..." : "No users found.")}</TableCaption>
         <TableHeader>
           <TableRow>
@@ -74,6 +74,7 @@ export const UsersTable = () => {
         </TableBody>
       </Table>
       <Pagination
+        className="order-1 md:!order-3 mb-4"
         currentPage={currentPage}
         pageSize={pageSize}
         totalPages={totalPages}
