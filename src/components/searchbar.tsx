@@ -3,7 +3,7 @@ import { MagnifyingGlassIcon, Cross2Icon } from "@radix-ui/react-icons"
 import { cn } from "@/lib/utils"
 
 interface SearchBarProps {
-  className: string;
+  className?: string;
   onChange: (searchStr: string) => void
 }
 

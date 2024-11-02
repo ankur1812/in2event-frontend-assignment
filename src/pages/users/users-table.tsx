@@ -22,7 +22,7 @@ import { User } from "@/schemas/user";
 import { Spinner } from "@/components/ui/animated-spinner";
 
 export const UsersTable = () => {
-  const { loading, users, currentUserInfo, showModal, showAddUserModal, toastMessage, totalCount, totalPages, currentPage, pageSize, sortField, sortDirection, error, mutations } = useUsers();
+  const { loading, users, currentUserInfo, showModal, showAddUserModal, toastMessage, totalUsersCount, totalPages, currentPage, pageSize, sortField, sortDirection, error, mutations } = useUsers();
 
   const sortHeader = (fieldName: string) => (
     <TableHead>
@@ -40,7 +40,7 @@ export const UsersTable = () => {
     <div className={cn({"opacity-80 pointer-events-none": loading})}>
       <SearchBar onChange={mutations.filterUsers}/>
       <Table>
-        <TableCaption>{users.length ? `Showing ${users.length} of ${totalCount} user records` : (loading ? "Loading..." : "No users found.")}</TableCaption>
+        <TableCaption>{users.length ? `Showing ${users.length} of ${totalUsersCount} user records` : (loading ? "Loading..." : "No users found.")}</TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead>ID</TableHead>
@@ -78,7 +78,7 @@ export const UsersTable = () => {
         pageSize={pageSize}
         totalPages={totalPages}
         onPageChange={(page) => mutations.setCurrentPage(page)}
-        onSizeChange={(size) => mutations.setPageSize(size)} 
+        onSizeChange={(size) => mutations.updatePageSize(size)} 
       />
       {<Modal isOpen={showModal || showAddUserModal} title={showAddUserModal ? 'Add User' : currentUserInfo?.name} onClose={mutations.closeModal}> 
         {currentUserInfo && <UserInfo user={currentUserInfo} />}
