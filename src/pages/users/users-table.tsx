@@ -15,20 +15,14 @@ import { Modal } from "@/components/ui/modal";
 import { UserInfo } from "@/components/userinfo";
 import { useUsers } from "@/services/use-users";
 import { NewUserForm } from "@/components/new-user-form";
-import { EyeOpenIcon } from "@radix-ui/react-icons"
+import { EyeOpenIcon, PersonIcon } from "@radix-ui/react-icons"
 import Toast from "@/components/ui/toast";
 import Pagination from "@/components/ui/pagination";
+import { User } from "@/schemas/user";
+import { Spinner } from "@/components/ui/animated-spinner";
 
 export const UsersTable = () => {
   const { loading, users, currentUserInfo, showModal, showAddUserModal, toastMessage, totalCount, totalPages, currentPage, pageSize, sortField, sortDirection, error, mutations } = useUsers();
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
 
   const sortHeader = (fieldName: string) => (
     <TableHead>
@@ -43,10 +37,10 @@ export const UsersTable = () => {
   )
     
   return (
-    <>
+    <div className={cn({"opacity-80 pointer-events-none": loading})}>
       <SearchBar onChange={mutations.filterUsers}/>
       <Table>
-        <TableCaption>{users.length ? `Showing ${users.length} of ${totalCount} user records` : "No users found."}</TableCaption>
+        <TableCaption>{users.length ? `Showing ${users.length} of ${totalCount} user records` : (loading ? "Loading..." : "No users found.")}</TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead>ID</TableHead>
@@ -58,12 +52,19 @@ export const UsersTable = () => {
         </TableHeader>
         <TableBody>
           <TableRow>
-            <TableCell colSpan={5} className="text-center"> <button className="focus:outline-none focus:shadow-none" onClick={() => mutations.setShowAddUserModal(true)}> + Add New User</button></TableCell>
+            <TableCell colSpan={5} className="text-center"> <button className="w-full focus:outline-none focus:shadow-none" onClick={() => mutations.setShowAddUserModal(true)}> + Add New User</button></TableCell>
           </TableRow>
-          {users.map((user) => (
-            <TableRow key={user.id}>
+          {!users.length && loading && 
+            <TableRow>
+              <TableCell colSpan={5}>
+                <Spinner />
+              </TableCell>
+            </TableRow>
+          }
+          {users?.map((user:User, i: number) => (
+            <TableRow key={user.id} className={cn({"text-emerald-400": toastMessage && toastMessage.includes(user.name) })}>
               <TableCell className="font-medium">{user.id}</TableCell>
-              <TableCell>{user.name}</TableCell>
+              <TableCell> <PersonIcon className="inline" /> {user.name}</TableCell>
               <TableCell>{user.username}</TableCell>
               <TableCell>{user.email}</TableCell>
               <TableCell> <button className="hover:text-white focus:shadow-none" onClick={() => mutations.viewUser(user.id)}><EyeOpenIcon /></button></TableCell>
@@ -82,7 +83,7 @@ export const UsersTable = () => {
         {currentUserInfo && <UserInfo user={currentUserInfo} />}
         {showAddUserModal && <NewUserForm onSave={mutations.addNewUser} />}
       </Modal>}
-      <Toast message={toastMessage} />
-    </>
+      <Toast isError={!!error} message={toastMessage || error || ""} />
+    </div>
   );
 };
