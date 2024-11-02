@@ -2,7 +2,8 @@ import React from "react";
 import { User, UserSchema } from "@/schemas/user";
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { PersonIcon, EnvelopeClosedIcon, MobileIcon, GlobeIcon, HomeIcon, IdCardIcon, BackpackIcon } from "@radix-ui/react-icons"
+import { PersonIcon, EnvelopeClosedIcon, MobileIcon, GlobeIcon, HomeIcon, IdCardIcon, BackpackIcon, ChatBubbleIcon, MagicWandIcon } from "@radix-ui/react-icons"
+import { cn } from "@/lib/utils";
   
 interface NewUserFromProps {
   onSave: (user: User) => void;
@@ -12,14 +13,18 @@ const NewUserForm: React.FC<NewUserFromProps> = ({ onSave }) => {
 
     const { register, handleSubmit, formState: { errors }, setError, clearErrors } = useForm();
     const onSubmit = (data: any) => {
-      let { companyName, catchPhrase, suite, street, city, zipcode, ...userData } = data;
-      let address = { suite, street, city, zipcode }
-      let company = { name: companyName, catchPhrase: data.catchPhrase };
-      userData = { ...userData, address, company };
-      // console.log(userData);
+      let { companyName, catchPhrase, bs, suite, street, city, zipcode, ...userData } = data;
+      if (suite || street || city || zipcode) {
+        let address = { suite, street, city, zipcode }
+        userData = { ...userData, address };
+      }
+      if (companyName || catchPhrase || bs) {
+        let company = { name: companyName, catchPhrase, bs };
+        userData = { ...userData, company };
+      }
       clearErrors();
       try {
-        UserSchema.parse(data);
+        UserSchema.parse(userData);
         onSave(userData);
       } catch (error) {
         if (error instanceof z.ZodError) {
@@ -31,7 +36,7 @@ const NewUserForm: React.FC<NewUserFromProps> = ({ onSave }) => {
       }
     };
     const iconMap:any = {
-      PersonIcon, EnvelopeClosedIcon, MobileIcon, GlobeIcon, HomeIcon, IdCardIcon, BackpackIcon
+      PersonIcon, EnvelopeClosedIcon, MobileIcon, GlobeIcon, HomeIcon, IdCardIcon, BackpackIcon, MagicWandIcon, ChatBubbleIcon
     }
   
 
@@ -40,18 +45,20 @@ const NewUserForm: React.FC<NewUserFromProps> = ({ onSave }) => {
       const Icon = iconMap[icon];
       return (
         <div className="flex flex-col items-center md:items-auto w-full md:w-1/2">
-          <div className="flex flex-wrap">
+          <div className="flex flex-wrap gap-x-2 gap-y-0">
             <span className="flex gap-2 items-center">
               { Icon && <Icon />}
               <label className="capitalize min-w-24" htmlFor="name">{label || fieldname} <sup>{ required ? '*' : ''}</sup></label>
             </span>
-            <input
-              id={fieldname}
-              className="bg-inherit border-b border-white focus:outline-none focus:shadow-none2"
-              {...register(`${fieldname}`)}
-            />
+            <div className="flex flex-col gap-1">
+              <input
+                id={fieldname}
+                className={cn("bg-inherit border-b border-white focus:outline-none focus:shadow-none2", {"border-red-400" : !!errorMsg})}
+                {...register(`${fieldname}`)}
+              />
+              <span className="block text-destructive text-xs ">{errorMsg}</span>
+            </div>
           </div>
-          <span className="block text-red-500 text-sm ml-24 h-10">{errorMsg}</span>
         </div>
       );
     }
@@ -70,27 +77,22 @@ const NewUserForm: React.FC<NewUserFromProps> = ({ onSave }) => {
         <div className="flex flex-wrap mt-2">
         { inputField('website', 'Website', 'GlobeIcon') }
         </div>
-        <span className="flex gap-2 items-center justify-center md:justify-normal">
-          <GlobeIcon />
-          <label className="text-md my-2">Address</label>
-        </span>
+        <label className="flex text-md mt-6 text-muted-foreground">User Address</label>
         <div className="flex flex-wrap mt-2">
-        { inputField('suite') }
+        { inputField('suite', 'Suite', 'HomeIcon') }
         { inputField('street') }
         </div>
         <div className="flex flex-wrap mt-2">
         { inputField('city') }
         { inputField('zipcode') }
         </div>
-        <span className="flex gap-2 items-center justify-center md:justify-normal">
-          <BackpackIcon />
-          <label className="text-md my-2">Company</label>
-        </span>
+        <label className="flex text-md mt-6 text-muted-foreground">Add Company details</label>
         <div className="flex flex-wrap mt-2">
-        { inputField('companyName', "Name") }
-        { inputField('catchPhrase', "Slogan") }
+        { inputField('companyName', 'Name', 'BackpackIcon') }
+        { inputField('bs', 'Bs', 'MagicWandIcon') }
+        { inputField('catchPhrase', 'Catch phrase', 'ChatBubbleIcon') }
         </div>
-        <button type="submit" className="w-full mt-4 p-2 bg-white text-black border border-transparent hover:bg-inherit hover:text-inherit hover:border-white">Save User</button>
+        <button type="submit" className="w-full mt-16 p-2 bg-white text-black border border-transparent hover:bg-inherit hover:text-inherit hover:border-white focus:bg-inherit focus:text-inherit">Save User</button>
       </form>
     );
 };

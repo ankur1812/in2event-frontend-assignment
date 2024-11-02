@@ -37,23 +37,18 @@ const Modal: React.FC<ModalProps> = ({ isOpen, title, onClose, children }) => {
   return (
     <>
       <div id="modal-backdrop" className="fixed inset-0 bg-black bg-opacity-50 z-50" />
-      <div id="modal-container" className="fixed inset-0 flex items-end md:items-center justify-center z-50">
-        <div className="flex flex-col overflow-x-hidden overflow-y-auto border border-white bg-black rounded-lg p-6 md:max-w-[66%] w-full h-[90dvh] md:h-auto md:min-h-[60dvh] md:max-h-[90dvh] relative">
-          <div className="relative flex items-center justify-center border-b border-white mb-3 text-xl pb-4">
-            {title && (
-              <div className="flex gap-4 items-center">
-                {title == 'Add User' ? <Pencil2Icon className="scale-150" /> : <PersonIcon className="scale-150" />}
-               {title}
-              </div>
-            )}
-            <button
-              className="absolute top-0 right-2 text-gray-500 text-xl hover:text-gray-700"
-              onClick={onClose}
-            >
+      <div id="modal-container" className="fixed inset-0 flex items-end md:items-center justify-center z-50 shadow-lg">
+        <div className="flex flex-col border border-white bg-black rounded-sm md:max-w-[66%] w-full h-[90dvh] md:h-auto md:min-h-[70dvh] md:max-h-[90dvh] relative">
+          <div id="modal-header" className=" flex items-center justify-center px-4 py-8 border-b border-white text-xl h-12">
+            <div className="flex gap-4 items-center">
+              {title == 'Add User' ? <Pencil2Icon className="scale-150" /> : <PersonIcon className="scale-150" />}
+              {title}
+            </div>
+            <button onClick={onClose} className="absolute top-1 right-3 text-gray-500 text-xl hover:text-gray-700">
               &times;
             </button>
           </div>
-          <div id="modal-body">{children}</div>
+          <div id="modal-body" className="overflow-x-hidden overflow-y-auto px-8 py-4">{children}</div>
         </div>
       </div>
     </>

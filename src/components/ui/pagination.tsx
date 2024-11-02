@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils';
 import React from 'react';
 
 interface PaginationProps {
@@ -32,9 +33,7 @@ interface PaginationProps {
           <button
             key={page}
             onClick={() => handlePageClick(page)}
-            className={`px-3 py-1 rounded focus:outline-none focus:shadow-none hover:bg-blue-400 ${
-              page === currentPage ? 'bg-blue-400 text-white' : ''
-            }`}
+            className={cn("px-3 py-1 rounded focus:outline-none focus:shadow-none hover:border-white", {'bg-white text-black': page === currentPage })}
           >
             {page}
           </button>

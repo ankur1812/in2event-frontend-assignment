@@ -7,7 +7,7 @@ export const UserSchema = z.object({
   email: z.string().email('Invalid email'),
   phone: z.string().regex( /^(\+?\d{1,2}\s?)?(\(?\d{3}\)?[\s.-]?)?\d{3}[\s.-]?\d{4}$/, "Invalid phone number"),
   website: z.string()
-    // .regex( /^(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$/,"Invalid URL format")
+      .regex(/^(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)*$|^$/,"Invalid URL format")
       .optional(),
   address: z.object({
     suite: z.string().optional(),

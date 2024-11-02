@@ -1,38 +1,50 @@
 import * as React from "react"
-
+import { MagnifyingGlassIcon, Cross2Icon } from "@radix-ui/react-icons"
 import { cn } from "@/lib/utils"
 
-const SearchBar = React.forwardRef<
-  HTMLInputElement,
-  React.HTMLAttributes<HTMLInputElement>
->(({ className, onChange }) => {
+interface SearchBarProps {
+  className: string;
+  onChange: (searchStr: string) => void
+}
+
+const SearchBar: React.FC<SearchBarProps> = ({ className, onChange }) => {
 
   const [searchString, setSearchString] = React.useState("")
-  const ref= React.useRef(null);
+  const ref = React.useRef(null)
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const value = e.target.value;
-    onChange && onChange(value)
+    onChange(value)
     setSearchString(value)
   };
 
   const clearSearch = () => {
-    onChange && onChange("");
+    onChange("");
     setSearchString('');
     ref?.current?.focus()
   }
   
   return (
-    <div className="relative flex w-full overflow-auto">
-      <input
-        value={searchString}
-        ref={ref}
-        onChange={ handleChange }
-        className={cn("w-60 px-1 py-1 bg-inherit mb-2focus:outline-none focus:shadow-none", className)} placeholder="Search user by name or email"
-      />
-      {searchString && <button onClick={clearSearch} className="hover:text-white hover:text-md focus:outline-none focus:shadow-none">Clear Search</button>}
+    <div className="relative flex items-center gap-2  w-full overflow-auto mb-2">
+      <div className="flex items-center border-b border-white">
+        <MagnifyingGlassIcon />
+        <input
+          value={searchString}
+          ref={ref}
+          onChange={ handleChange }
+          className={cn("w-52 px-2 py-1 bg-inherit  focus:outline-none focus:shadow-none", className)} placeholder="Search by name or email"
+        />
+      </div>
+      {searchString && (
+        <button
+          onClick={clearSearch}
+          className="flex gap-1 items-center bg-white px-2 py-1 text-black hover:bg-inherit hover:text-inherit hover:text-md focus:outline-none focus:shadow-none">
+            Clear Search
+            <Cross2Icon />
+          </button>
+        )}
     </div>
-  )})
-SearchBar.displayName = "SearchBar"
+  )
+}
 
 export {
   SearchBar

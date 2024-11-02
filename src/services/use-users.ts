@@ -13,8 +13,8 @@ const useUsers = () => {
   const [showAddUserModal, setShowAddUserModal] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>("");
   const [pageSize, setPageSize] = useState<number>(10);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(1);
+  const [currentPage, setCurrentPage] = useState<number>(0);
+  const [totalPages, setTotalPages] = useState<number>(0);
   const [sortField, setSortField] = useState<sortingType>();
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | null>(null);
 
@@ -34,7 +34,8 @@ const useUsers = () => {
       const data = await response.json();
       return data;
     } catch {
-      setError("Failed to fetch users");
+      setError("Failed to fetch user(s)");
+      setTimeout( () => setError(''), 3000)
     } finally {
       setLoading(false);
     }
@@ -48,8 +49,14 @@ const useUsers = () => {
 
   const viewUser = async (userId: number) => {
     let userInfo = await fetchDataFromApi(`https://jsonplaceholder.typicode.com/users/${userId}`);
-    setCurrentUserInfo(userInfo);
-    updateShowModal(true);
+    if (!userInfo) { // Since API fails for client-side records, fallback from existing data
+      userInfo = allUsers.find( (u:User) => u.id == userId)
+    }
+    if (!!userInfo) {
+      if (!userInfo) return;
+      setCurrentUserInfo(userInfo);
+      updateShowModal(true);
+    }
   }
 
   const filterUsers = (filterString: string) => {
@@ -59,8 +66,13 @@ const useUsers = () => {
   const addNewUser = async (user: User) => {
     user.id = allUsers.length + 100; // Generqte id client-side
     const response = await fetchDataFromApi(`https://jsonplaceholder.typicode.com/users/`, 'POST', user);
+    if(!response) return;
+    // Workaround for client-side update.
+    // Since post call doesn't update the server database, upadte allUsers data client side 
     setAllUsers([user, ...allUsers]);
-    setToastMessage(`User ${user.username} successfully added!`)
+    setSortField(undefined) // Remove sorting so new data appears on top of table
+    setToastMessage(`User ${user.name} successfully added!`)
+    setTimeout( () => setToastMessage(''), 2000);
     closeModal();
   }
 

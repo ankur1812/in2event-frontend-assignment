@@ -26,7 +26,7 @@ export const UsersTable = () => {
 
   const sortHeader = (fieldName: string) => (
     <TableHead>
-      <button className="flex gap-2 items-center capitalize focus:shadow-none hover:text-white" onClick={() => mutations.sortTable(fieldName)}>
+      <button className="flex gap-2 items-center w-full capitalize focus:shadow-none hover:text-accent" onClick={() => mutations.sortTable(fieldName)}>
         <span className={cn({"text-secondary": sortField == fieldName})}>
           {fieldName}
         </span>
@@ -45,7 +45,8 @@ export const UsersTable = () => {
           <TableRow>
             <TableHead>ID</TableHead>
             {sortHeader('name')}
-            <TableHead>Username</TableHead>
+            {/* Hide username column for mobile screens */}
+            <TableHead className="hidden md:!table-cell">Username</TableHead>
             {sortHeader('email')}
             <TableHead>Action</TableHead>
           </TableRow>
@@ -61,13 +62,13 @@ export const UsersTable = () => {
               </TableCell>
             </TableRow>
           }
-          {users?.map((user:User, i: number) => (
-            <TableRow key={user.id} className={cn({"text-emerald-400": toastMessage && toastMessage.includes(user.name) })}>
+          {users?.map((user:User) => (
+            <TableRow key={user.id} className={cn({"text-emerald-200": toastMessage && toastMessage.includes(user.name) })}>
               <TableCell className="font-medium">{user.id}</TableCell>
               <TableCell> <PersonIcon className="inline" /> {user.name}</TableCell>
-              <TableCell>{user.username}</TableCell>
+              <TableCell className="hidden md:!table-cell">{user.username}</TableCell>
               <TableCell>{user.email}</TableCell>
-              <TableCell> <button className="hover:text-white focus:shadow-none" onClick={() => mutations.viewUser(user.id)}><EyeOpenIcon /></button></TableCell>
+              <TableCell> <button className="hover:text-accent focus:shadow-none" onClick={() => mutations.viewUser(user.id)}><EyeOpenIcon /></button></TableCell>
             </TableRow>
           ))}
         </TableBody>
