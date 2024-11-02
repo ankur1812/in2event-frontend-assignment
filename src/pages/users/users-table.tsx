@@ -81,7 +81,7 @@ export const UsersTable = () => {
         onPageChange={(page) => mutations.setCurrentPage(page)}
         onSizeChange={(size) => mutations.updatePageSize(size)} 
       />
-      {<Modal isOpen={showModal || showAddUserModal} title={showAddUserModal ? 'Add User' : currentUserInfo?.name} onClose={mutations.closeModal}> 
+      {(showModal || showAddUserModal) && <Modal title={showAddUserModal ? 'Add User' : currentUserInfo?.name} onClose={mutations.closeModal}> 
         {currentUserInfo && <UserInfo user={currentUserInfo} />}
         {showAddUserModal && <NewUserForm onSave={mutations.addNewUser} />}
       </Modal>}

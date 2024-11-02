@@ -58,12 +58,32 @@ const config: Config = {
       },
       animation: {
         fadeInOut: 'fadeInOut 3s ease-in-out forwards',
+        enterModal: 'enterModal .25s forwards',
+        enterModal_mobile: 'enterModal_mobile .25s forwards',
+        exitModal: 'exitModal .25s forwards',
+        exitModal_mobile: 'exitModal_mobile .25s forwards'
       },
       keyframes: {
+        enterModal: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        enterModal_mobile: {
+          '0%': { transform: 'translateY(100%)' },
+          '100%': { transform: 'translateY(0)' },
+        },
+        exitModal: {
+          '0%': { opacity: '1' },
+          '100%': { opacity: '0' },
+        },
+        exitModal_mobile: {
+          '0%': { transform: 'translateY(0)' },
+          '100%': { transform: 'translateY(100%)' },
+        },
         fadeInOut: {
           '0%': { opacity: '0', transform: 'translateX(20px)' },
           '10%': { opacity: '1', transform: 'translateX(0)' },
-          '90%': { opacity: '1', transform: 'translateX(0)' },
+          '80%': { opacity: '1', transform: 'translateX(0)' },
           '100%': { opacity: '0', transform: 'translateX(20px)' },
         },
       },
