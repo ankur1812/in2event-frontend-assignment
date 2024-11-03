@@ -15,7 +15,7 @@ interface PaginationProps {
 
   // Update page when a button is clicked
   const handlePageClick = (page:number) => {
-    onPageChange(page); // Trigger the page change callback
+    currentPage != page && onPageChange(page); // Trigger the page change callback
   };
 
   // Handle page size change
@@ -28,8 +28,8 @@ interface PaginationProps {
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   return (
-    <div className={cn("flex items-between justify-between", className)}>
-      <div className="flex space-x-2 mt-4">
+    <div className={cn("flex items-between justify-between mt-2", className)}>
+      <div className="flex flex-wrap gap-1 md:gap-2 mt-4">
         {pageNumbers.map((page) => (
           <button
             key={page}
@@ -41,8 +41,8 @@ interface PaginationProps {
         ))}
       </div>
 
-      <div className="mt-2">
-        <label className="mr-2">Page Size:</label>
+      <div className="flex flex-col">
+        <label className="mr-2">Rows</label>
         <select
           value={pageSize}
           onChange={handlePageSizeChange}

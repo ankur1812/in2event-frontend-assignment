@@ -57,37 +57,43 @@ const config: Config = {
         sm: "calc(var(--radius) - 4px)",
       },
       animation: {
+        highlight: 'highlight 2s ease-in-out forwards',
         fadeInOut: 'fadeInOut 3s ease-in-out forwards',
         enterModal: 'enterModal .25s forwards',
-        enterModal_mobile: 'enterModal_mobile .25s forwards',
         exitModal: 'exitModal .25s forwards',
+        enterModal_mobile: 'enterModal_mobile .25s forwards',
         exitModal_mobile: 'exitModal_mobile .25s forwards'
       },
       keyframes: {
+        highlight: {
+          '0%': { color: '#ededed' },
+          '20%': { color: '#a7f3d0' },
+          '100%': { color: '#ededed' }
+        },
         enterModal: {
           '0%': { opacity: '0' },
-          '100%': { opacity: '1' },
-        },
-        enterModal_mobile: {
-          '0%': { transform: 'translateY(100%)' },
-          '100%': { transform: 'translateY(0)' },
+          '100%': { opacity: '1' }
         },
         exitModal: {
           '0%': { opacity: '1' },
-          '100%': { opacity: '0' },
+          '100%': { opacity: '0' }
+        },
+        enterModal_mobile: {
+          '0%': { transform: 'translateY(100%)' },
+          '100%': { transform: 'translateY(0)' }
         },
         exitModal_mobile: {
           '0%': { transform: 'translateY(0)' },
-          '100%': { transform: 'translateY(100%)' },
+          '100%': { transform: 'translateY(100%)' }
         },
         fadeInOut: {
           '0%': { opacity: '0', transform: 'translateX(20px)' },
           '10%': { opacity: '1', transform: 'translateX(0)' },
           '80%': { opacity: '1', transform: 'translateX(0)' },
-          '100%': { opacity: '0', transform: 'translateX(20px)' },
-        },
-      },
-    },
+          '100%': { opacity: '0', transform: 'translateX(20px)' }
+        }
+      }
+    }
   },
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   plugins: [require("tailwindcss-animate")],

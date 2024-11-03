@@ -123,7 +123,7 @@ export const UsersTable = () => {
     </>);
 
   return (
-    <div className={cn("flex flex-col", {"opacity-80 pointer-events-none": loading})}>
+    <div className={cn("flex flex-col", {"opacity-80 pointer-events-none": loading || tanstackLoading })}>
       <SearchBar className="order-1" currentFilter={searchTerm} onChange={filterUsers}/>
       <Table className="order-2 max-h-[70dvh] md:!max-h-max">
         <TableCaption>{loading || tanstackLoading ? "Loading..." : (users?.length ? `Showing ${users?.length} of ${usersCount} user records found.` : "No users found.")}</TableCaption>
@@ -149,7 +149,7 @@ export const UsersTable = () => {
             </TableRow>
           }
           {addedUser && showNewUser && (
-            <TableRow className="text-emerald-200">
+            <TableRow className="animate-highlight">
               {userCells(addedUser)}
             </TableRow>)}
           {users?.map((user:User) => (
@@ -165,7 +165,7 @@ export const UsersTable = () => {
         pageSize={pageSize}
         totalPages={totalPages}
         onPageChange={(page) => applyFilters(page, pageSize, searchTerm)}
-        onSizeChange={(size) => applyFilters(1, size, searchTerm)} 
+        onSizeChange={(size) => applyFilters(1, size, searchTerm)}
       />
       {showUsersInfoModal && (
         <Modal title={showAddUserModal ? 'Add User' : currentUserInfo?.name} onClose={() => setShowUserInfoModal(false)}> 

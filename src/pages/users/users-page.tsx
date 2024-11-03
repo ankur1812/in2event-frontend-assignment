@@ -14,4 +14,3 @@ export default function UsersPage() {
     </QueryClientProvider>
   );
 }
-// import { AnimatedLoadingBar } from "@/components/ui/animated-loadingbar";
