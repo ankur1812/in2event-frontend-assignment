@@ -42,9 +42,6 @@ export const UsersTable = () => {
   const [ showAddUserModal, setShowAddUserModal ] = useState<boolean>(false)
   const [ showNewUser, setShowNewUser ] = useState<boolean>(false)
 
-  // const { loading, users, currentUserInfo, showUsersInfoModal, showAddUserModal, toastMessage, usersCount, totalPages, currentPage, pageSize, sortField, sortDirection, error, mutations } = useUsers();
-  let  mutations: any, toastMessage: string;
-
   const { users, searchTerm, pageSize, usersCount, currentPage, totalPages, sortField, sortDirection, currentUserInfo, addedUser } = data;
 
   useEffect(() => {

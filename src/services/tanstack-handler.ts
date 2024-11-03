@@ -1,11 +1,15 @@
+import { TanstackState } from "@/schemas/tanstack-state";
 import { User } from "@/schemas/user";
 import { QueryClient } from "@tanstack/react-query";
 
-const initialState: any = {
+export const TANSTACK_USERS_KEY = 'tanstack_users'
+
+const initialState: TanstackState = {
   users: [],
   pageSize: 10,
   currentPage: 1,
   totalPages: 1,
+  searchTerm: '',
   sortField: '',
   sortDirection: '',
   usersCount: 0,
@@ -46,7 +50,7 @@ const addUser = async (payload: User) => {
   return { "message": "Success", user: payload};
 }
 
-const updateCurrentUserInfo = (previousState: any, userInfo: User) => {
+const updateCurrentUserInfo = (previousState: TanstackState, userInfo: User) => {
   return  {
     ...previousState,
     currentUserInfo: userInfo
@@ -56,8 +60,8 @@ const updateCurrentUserInfo = (previousState: any, userInfo: User) => {
 const addNewUser = async (queryClient: QueryClient, user: User) => {
   const response = await addUser(user);
   if (!response) return;
-  const previousState: any = queryClient.getQueryData([TANSTACK_USERS_KEY]) || {};
-  const updatedState: any = {
+  const previousState: TanstackState | any = queryClient.getQueryData([TANSTACK_USERS_KEY]) || {};
+  const updatedState: TanstackState = {
     ...previousState,
     usersCount: previousState.usersCount + 1,
     addedUser: {
@@ -65,13 +69,12 @@ const addNewUser = async (queryClient: QueryClient, user: User) => {
       id: previousState.allUsersCount + 1 // Manually add the expected ID, Supabase doesn't return the ID details on POST request
     }
   }
-  debugger;
   queryClient.setQueryData([TANSTACK_USERS_KEY], updatedState);
 }
 
 const handleRefetch = async (queryClient: QueryClient, filters: any, additionalStateUpdates: any = null) => {
   const usersNewData = await fetchUsers(filters);
-  const previousState: any = queryClient.getQueryData([TANSTACK_USERS_KEY]) || {};
+  const previousState: TanstackState | any = queryClient.getQueryData([TANSTACK_USERS_KEY]);
   let updatedState;
   if (filters.id) {
     // just update currentUserInfo if fetch-by-id
@@ -90,8 +93,6 @@ const handleRefetch = async (queryClient: QueryClient, filters: any, additionalS
   }
   queryClient.setQueryData([TANSTACK_USERS_KEY], updatedState);
 }
-
-export const TANSTACK_USERS_KEY = 'tanstack_users'
 
 export const tanstackHandler = () => ({
   tanstackUsersKey: TANSTACK_USERS_KEY,
