@@ -4,10 +4,11 @@ import { cn } from "@/lib/utils"
 
 interface SearchBarProps {
   className?: string;
+  currentFilter?: string;
   onChange: (searchStr: string) => void
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ className, onChange }) => {
+const SearchBar: React.FC<SearchBarProps> = ({ className, currentFilter, onChange }) => {
 
   const [searchString, setSearchString] = React.useState("")
   const ref = React.useRef(null)
@@ -34,7 +35,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ className, onChange }) => {
           className="w-52 px-2 py-1 bg-inherit  focus:outline-none focus:shadow-none" placeholder="Search by name or email"
         />
       </div>
-      {searchString && (
+      {currentFilter && searchString && (
         <button
           onClick={clearSearch}
           className="flex gap-1 items-center bg-white px-2 py-1 text-black hover:bg-inherit hover:text-inherit hover:text-md focus:outline-none focus:shadow-none">

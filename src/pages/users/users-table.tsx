@@ -127,7 +127,7 @@ export const UsersTable = () => {
 
   return (
     <div className={cn("flex flex-col", {"opacity-80 pointer-events-none": loading})}>
-      <SearchBar className="order-1" onChange={filterUsers}/>
+      <SearchBar className="order-1" currentFilter={searchTerm} onChange={filterUsers}/>
       <Table className="order-2 max-h-[70dvh] md:!max-h-max">
         <TableCaption>{loading || tanstackLoading ? "Loading..." : (users?.length ? `Showing ${users?.length} of ${usersCount} user records found.` : "No users found.")}</TableCaption>
         <TableHeader>

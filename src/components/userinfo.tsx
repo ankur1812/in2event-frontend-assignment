@@ -43,7 +43,7 @@ const UserInfo: React.FC<UserInfoProps> = ({ user }) => {
           const Icon = iconMap[item.icon!];
           if(!item.value) return null;
           return (
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col gap-1" key={item.label}>
               <span className="text-xs text-muted-fore2ground"> {item.label} </span>
               <div className="flex gap-2 items-center">
                 {Icon ? <Icon /> : '#'}
