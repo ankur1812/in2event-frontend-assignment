@@ -61,13 +61,15 @@ const addNewUser = async (queryClient: QueryClient, user: User) => {
   const response = await addUser(user);
   if (!response) return;
   const previousState: TanstackState | any = queryClient.getQueryData([TANSTACK_USERS_KEY]) || {};
+  const newUserInfo = {
+    ...response.user,
+    id: previousState.allUsersCount + 1 // Manually add the expected ID, Supabase doesn't return the ID details on POST request
+  }
   const updatedState: TanstackState = {
     ...previousState,
     usersCount: previousState.usersCount + 1,
-    addedUser: {
-      ...response.user,
-      id: previousState.allUsersCount + 1 // Manually add the expected ID, Supabase doesn't return the ID details on POST request
-    }
+    users: [newUserInfo, ...previousState.users],
+    addedUser: newUserInfo.id
   }
   queryClient.setQueryData([TANSTACK_USERS_KEY], updatedState);
 }

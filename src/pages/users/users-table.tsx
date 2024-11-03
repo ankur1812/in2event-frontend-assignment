@@ -109,19 +109,6 @@ export const UsersTable = () => {
     </TableHead>
   )
 
-  const userCells = (user: User) => (
-    <>
-      <TableCell className="font-medium">{user.id}</TableCell>
-      <TableCell> <PersonIcon className="inline" /> {user.name}</TableCell>
-      <TableCell className="hidden md:!table-cell">{user.username}</TableCell>
-      <TableCell>{user.email}</TableCell>
-      <TableCell>
-        <button className="hover:text-accent focus:shadow-none" onClick={() => viewUserDetails(user?.id)}>
-          <EyeOpenIcon />
-        </button>
-      </TableCell>
-    </>);
-
   return (
     <div className={cn("flex flex-col", {"opacity-80 pointer-events-none": loading || tanstackLoading })}>
       <SearchBar className="order-1" currentFilter={searchTerm} onChange={filterUsers}/>
@@ -148,13 +135,17 @@ export const UsersTable = () => {
               </TableCell>
             </TableRow>
           }
-          {addedUser && showNewUser && (
-            <TableRow className="animate-highlight">
-              {userCells(addedUser)}
-            </TableRow>)}
-          {users?.map((user:User) => (
-            <TableRow key={user.id}>
-              {userCells(user)}
+          {users?.map((user:User, i: number) => (
+            <TableRow key={user.id} className={cn({"animate-highlight": i == 0 && addedUser})}>
+              <TableCell className="font-medium">{user.id}</TableCell>
+              <TableCell> <PersonIcon className="inline" /> {user.name}</TableCell>
+              <TableCell className="hidden md:!table-cell">{user.username}</TableCell>
+              <TableCell>{user.email}</TableCell>
+              <TableCell>
+                <button className="hover:text-accent focus:shadow-none" onClick={() => viewUserDetails(user?.id)}>
+                  <EyeOpenIcon />
+                </button>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -177,7 +168,7 @@ export const UsersTable = () => {
           {showAddUserModal && <NewUserForm onSave={addNewUser} />}
         </Modal>
       )}
-      <Toast isError={!!error} message={( addedUser ? `User ${addedUser.name} successfully added!` :  error?.toString()) || ""} />
+      <Toast isError={!!error} message={( addedUser ? `User ${users[0].name} successfully added!` :  error?.toString()) || ""} />
     </div>
   );
 };

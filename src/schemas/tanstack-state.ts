@@ -11,5 +11,5 @@ export interface TanstackState {
     usersCount: number,
     allUsersCount: number,
     currentUserInfo: User | null,
-    addedUser: User | null
+    addedUser: number | null
 }
