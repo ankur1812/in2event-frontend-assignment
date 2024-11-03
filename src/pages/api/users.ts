@@ -36,32 +36,34 @@ export default async function handler(
   urlWithParams += `?${queryParams.toString()}`;
 
   try {
-    const response = await fetch(urlWithParams, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        apikey: API_KEY,
-      },
-    });
+    // We need to get the users and paginationInfo through 2 separate Supabase URLs, adding both of them in a promise array belowl
+    const apiCalls = [
+      fetch(urlWithParams, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          apikey: API_KEY,
+        },
+      }),
+      fetch(paginationInfoUrl, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          apikey: API_KEY,
+        },
+      })      
+    ];
 
-    const paginationInfo = await fetch(paginationInfoUrl, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        apikey: API_KEY,
-      },
-    });
-    // Supabase APIs dont give the pagination info so adding this call separately
-    if (!response.ok) {
-      const errorData = await response.json();
-      return res.status(response.status).json({ error: errorData });
+    let [ usersData, pagingData ] = await Promise.allSettled(apiCalls);
+    let [ users, totalCount ] = [ [], 0];
+    if (usersData.status == 'fulfilled') {
+      users = await usersData.value.json();
     }
-    const data = await response.json();
-    const paginationData = await paginationInfo.json();
-    res.status(200).json({
-      users: data,
-      totalCount: paginationData.length
-    });
+    if (pagingData.status == 'fulfilled') {
+      totalCount = (await pagingData.value.json()).length;
+    } else totalCount = users.length;
+
+    res.status(200).json({ users, totalCount });
   } catch (error) {
     res.status(500).json({ error: 'Internal Server Error', details: error?.message });
   }

@@ -84,7 +84,7 @@ const handleRefetch = async (queryClient: QueryClient, filters: any, additionalS
       ...additionalStateUpdates,
       addedUser: null,
       users: usersNewData.users,
-      usersCount: usersNewData.allUsersCount,
+      usersCount: usersNewData.usersCount,
     };
     updatedState.totalPages = Math.ceil(updatedState.usersCount / updatedState.pageSize)
   }

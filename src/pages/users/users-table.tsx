@@ -13,7 +13,6 @@ import { cn } from "@/lib/utils"
 import { SearchBar } from "@/components/searchbar";
 import { Modal } from "@/components/ui/modal";
 import { UserInfo } from "@/components/userinfo";
-import { useUsers } from "@/services/use-users";
 import { NewUserForm } from "@/components/new-user-form";
 import { EyeOpenIcon, PersonIcon } from "@radix-ui/react-icons"
 import Toast from "@/components/ui/toast";
