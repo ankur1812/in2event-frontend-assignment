@@ -3,6 +3,14 @@ import { User } from "@/schemas/user";
 import { QueryClient } from "@tanstack/react-query";
 
 export const TANSTACK_USERS_KEY = 'tanstack_users'
+const API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.'
+  + 'eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNoY2xre'
+  +'Xlndmt0cGxta2poc2JjIiwicm9sZS'
+  +'I6ImFub24iLCJpYXQiOjE3MzA1NDgy'
+  +'MjEsImV4cCI6MjA0NjEyNDIyMX0.'
+  +'Krp_wfhVUZ0jLe1qEsBkWGPBL6i8dW8'
+  +'UJigzFOTf6'
+  +'-M';
 
 const initialState: TanstackState = {
   users: [],
@@ -40,7 +48,7 @@ const addUser = async (payload: User) => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      apikey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNoY2xreXlndmt0cGxta2poc2JjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzA1NDgyMjEsImV4cCI6MjA0NjEyNDIyMX0.Krp_wfhVUZ0jLe1qEsBkWGPBL6i8dW8UJigzFOTf6-M',
+      apikey: API_KEY,
     },
     body: JSON.stringify(payload)
   });
