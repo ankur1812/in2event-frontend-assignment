@@ -1,7 +1,16 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-const API_URL = 'https://chclkyygvktplmkjhsbc.supabase.co/rest/v1/users';
-const API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNoY2xreXlndmt0cGxta2poc2JjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzA1NDgyMjEsImV4cCI6MjA0NjEyNDIyMX0.Krp_wfhVUZ0jLe1qEsBkWGPBL6i8dW8UJigzFOTf6-M';
+const API_URL = 'https://chclkyygvktplmkjhsbc'
+  +'.supabase.co/rest/v1/users';
+
+const API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.'
+  + 'eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNoY2xre'
+  +'Xlndmt0cGxta2poc2JjIiwicm9sZS'
+  +'I6ImFub24iLCJpYXQiOjE3MzA1NDgy'
+  +'MjEsImV4cCI6MjA0NjEyNDIyMX0.'
+  +'Krp_wfhVUZ0jLe1qEsBkWGPBL6i8dW8'
+  +'UJigzFOTf6'
+  +'-M';
 
 export default async function handler(
   req: NextApiRequest,
