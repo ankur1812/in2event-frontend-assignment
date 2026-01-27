@@ -53,7 +53,7 @@ const NewUserForm: React.FC<NewUserFromProps> = ({ onSave }) => {
             <div className="flex flex-col gap-1">
               <input
                 id={fieldname}
-                className={cn("bg-inherit border-b border-white focus:outline-none focus:shadow-none2", {"border-red-400" : !!errorMsg})}
+                className={cn("bg-inherit border-b border-primary_ focus:outline-none focus:border-primary_ focus:border-b-2 focus:shadow-none", {"border-red-400" : !!errorMsg})}
                 {...register(`${fieldname}`)}
               />
               <span className="block text-destructive text-xs ">{errorMsg}</span>
@@ -92,7 +92,7 @@ const NewUserForm: React.FC<NewUserFromProps> = ({ onSave }) => {
         { inputField('bs', 'Bs', 'MagicWandIcon') }
         { inputField('catchPhrase', 'Catch phrase', 'ChatBubbleIcon') }
         </div>
-        <button type="submit" className="w-full mt-16 p-2 bg-white text-black border border-transparent hover:bg-inherit hover:text-inherit hover:border-white focus:bg-inherit focus:text-inherit">Save User</button>
+        <button type="submit" className="w-full mt-16 p-2 bg-background_ text-secondary_ border border-primary_ hover:font-bold focus:font-bold focus:border-primary_!">Save User</button>
       </form>
     );
 };

@@ -26,7 +26,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ className, currentFilter, onChang
   
   return (
     <div className={cn("relative flex items-center gap-2  w-full overflow-auto mb-2", className)}>
-      <div className="flex items-center border-b border-white">
+      <div className="flex items-center border-b border-secondary_">
         <MagnifyingGlassIcon />
         <input
           value={searchString}
@@ -38,7 +38,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ className, currentFilter, onChang
       {currentFilter && searchString && (
         <button
           onClick={clearSearch}
-          className="flex gap-1 items-center bg-white px-2 py-1 text-black hover:bg-inherit hover:text-inherit hover:text-md focus:outline-none focus:shadow-none">
+          className="flex gap-1 items-center bg-inherit border border-foreground_ px-2 py-1 text-inherit hover:font-bold hover:text-md focus:outline-none focus:shadow-none focus:font-bold">
             Clear Search
             <Cross2Icon />
           </button>

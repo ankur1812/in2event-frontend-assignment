@@ -10,6 +10,11 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        background_: "var(--background)",
+        foreground_: "var(--foreground)",
+        primary_: "var(--primary)",
+        secondary_: "var(--secondary)",
+
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {
@@ -57,7 +62,7 @@ const config: Config = {
         sm: "calc(var(--radius) - 4px)",
       },
       animation: {
-        highlight: 'highlight 2s ease-in-out forwards',
+        highlight: 'highlight 5s ease-in-out forwards',
         fadeInOut: 'fadeInOut 3s ease-in-out forwards',
         enterModal: 'enterModal .25s forwards',
         exitModal: 'exitModal .25s forwards',
@@ -66,9 +71,10 @@ const config: Config = {
       },
       keyframes: {
         highlight: {
-          '0%': { color: '#ededed' },
-          '20%': { color: '#a7f3d0' },
-          '100%': { color: '#ededed' }
+          '0%': { color: 'inherit' },
+          '20%': { color: '#10b981' },
+          '80%': { color: '#10b981' },
+          '100%': { color: 'inherit' },
         },
         enterModal: {
           '0%': { opacity: '0' },
