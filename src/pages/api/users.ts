@@ -68,6 +68,11 @@ export default async function handler(
     if (usersData.status == 'fulfilled') {
       users = await usersData.value.json();
     }
+    else {
+      console.log('Fetch user error');
+      console.log(usersData);
+      res.status(500).json({ error: 'Failed to fetch user(s)', details: '' })
+    }
     if (pagingData.status == 'fulfilled') {
       totalCount = (await pagingData.value.json()).length;
     } else totalCount = users.length;
